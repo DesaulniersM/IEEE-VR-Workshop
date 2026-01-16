@@ -65,7 +65,7 @@
 
 %% Paper title.
 
-\title{A Hybrid Architecture for \\ Low Latency AR Alignment}
+\title{A Hybrid Architecture for Low Latency AR Alignment}
 
 %% This is how authors are specified in the conference style
 
@@ -87,11 +87,10 @@
 \and Martha Stewart\thanks{e-mail: martha.stewart@marthastewart.com}\\ %
      \parbox{1.4in}{\scriptsize \centering Martha Stewart Enterprises \\ Microsoft Research}}
 
-\author{Matthew Desaulniers
-\\ Department of Computer Science \\
-Colorado School of Mines\\
-Golden, USA \\
-mdesaulniers@mines.edu}
+\author{Matthew Desaulniers and Qi Han\\ 
+Department of Computer Science \\
+Colorado School of Mines, Golden, CO, USA \\
+\{mdesaulniers,qhan\}@mines.edu}
 
 %% A teaser figure can be included as follows
 % \teaser{
@@ -107,17 +106,15 @@ mdesaulniers@mines.edu}
   robotic systems. Multi-user systems provide information that may otherwise be unavailable to an independent user 
   and augmented reality enables the integration of that information naturally into the human perception system. Multi-user AR 
   systems can scale large, become complex, and generate quantities of data that must be managed and communicated 
-  between users. This paper describes efforts to lower human perceived end-to-end latency of a multi-user AR system. %QH{This paper describes efforts to design and fully implement a benchmark multi-user AR system. this is not an accurate claim of this work's contribution since this sounds like the entire work is about implementing the benchmark system} 
-  The system is measured with respect to user perceived latency as a motivation for directing efforts for future system-level research 
+  between users. This paper describes efforts to lower human perceived end-to-end latency of a multi-user AR system.  The system is measured with respect to user perceived latency as a motivation for directing efforts for future system-level research 
   as well as improvements. We find that the latency bottleneck is associated with the cloud server based user alignment 
   system.
-   % \QH{and augment this system with a peer-to-peer user alignment scheme. should break this up here.  the flow should be that we identified the bottleneck, then what we did to address that.} 
+   
   We augment the system with a peer-to-peer alignment scheme that runs in parallel to the cloud server based alignment. We 
   implement the new user alignment system and measure latency and user alignment accuracy with respect to the user expected cloud server alignment. 
   Finally we analyze data from experiments conducted with the fully implemented system. We find that the peer-to-peer hybrid
   system along with our proposed gravity-based alignment drastically reduces user perceived latency at the cost of some variance in positional and angular accuracy. We 
-  discuss future work on how the system may be made more robust to scaling and network conditions. %\QH{in technical writing, we use active voice, not passive voice. so instead of ``future work is discussed", we say ``we discuss future work"}
-  latency
+  discuss future work on how the system may be made more robust to scaling and network conditions. 
 } % end of abstract
 
 %% Keywords that describe your work. Will show as 'Index Terms' in journal
@@ -181,7 +178,7 @@ world around a user, an AR system must be portable and small in size, whether wi
 it be small in form factor, but it should also have high computational ability. These factors result in 
 high cost for devices that render AR solutions infeasible within many application spaces. As in our previous warehouse scenario, the close 
 proximity between the operator and object/person of interest requires the system to function at real-time latencies. This work
-aims to decrease end-to-end system latency without significantly sacrificing object placement accuracy using common off-the-shelf AR devices. %\QH{add specific use case here about the close proximity of users as this gives a clear picture of the problem scope.}
+aims to decrease end-to-end system latency without significantly sacrificing object placement accuracy using common off-the-shelf AR devices for users in close proximity. 
 
 % This reduced size for portability demands a direct trade-off between system size and cost as a consequence. A system that is portable and can
 % successfully compute spatial/visual computations for AR independently would be therefore prohibitively costly. This 
@@ -215,8 +212,8 @@ The specific major contributions of this work are as follows.
 \begin{itemize}
     \item We have conducted an exploratory study on end-to-end latency of current solutions for user interactions and the data flow in multi-user AR 
     of resource-constrained devices. This study led us to address the latency bottleneck in the cloud-based alignment process. 
-    \item We have propose a gravity-based user alignment approach that is able to resolve alignment an order of magnitude faster than cloud-based methods in resource-constrained mobile devices. 
     \item We have implemented a hybrid architecture for multi-user AR that combines a client-server model and a peer-to-peer model using Android phones.
+    \item We have developed a gravity-based user alignment approach that is able to resolve alignment in resource-constrained mobile devices.  % an order of magnitude faster than cloud-based methods 
     \item We have compared the end-to-end latency of our system against a common cloud solution using Google Cloud servers. This 
     resulted in reductions from over 3000ms to approximately 100ms at the expense of cm scale anchor jitter.
 \end{itemize}
@@ -302,8 +299,7 @@ space, then all other users in the space will see the object where that user pla
 platform and AR-specific functions were built from AR Foundation and ARCore libraries. We used
 Google's cloud-based Cloud Anchor alignment system. UDP sockets were used for communication between peer devices and the ARCore 
 API was used for making requests to Google Cloud servers. 
-This application consists of several major components: SLAM, object detection, streaming and peer-to-peer communication, and alignment. We measured the latencies incurred by these components and show the results in Table \ref{tab:baseline}. % \MD{MAybe i should just edit the parallel process diagram. I am having trouble coming upwith a good format for the table because i can't actually measure all the time intervals of the diagram individually.}
-
+This application consists of several major components: SLAM, object detection, streaming and peer-to-peer communication, and alignment. We measured the latencies incurred by these components and show the results in Table \ref{tab:baseline}. 
 \begin{table}[!htb]
     \centering
     \begin{tabular}{|l|r|}
@@ -323,7 +319,7 @@ This application consists of several major components: SLAM, object detection, s
         Peer places object locally & 1.05\\
         \hline
     \end{tabular}
-    \caption{Latency breakdown of exploratory system.}
+    \caption{Latency breakdown of Google's cloud-based Cloud Anchor alignment system.}
     \label{tab:baseline}
 \end{table}
 
@@ -331,9 +327,7 @@ This application consists of several major components: SLAM, object detection, s
 We first observe that the actual placement of objects takes a trivial amount of time (approximately 1ms). Any communication related processes also 
 are low latency tasks, as every peer has connectivity to every other peer. We further observe that Hosting Cloud Anchor and Peer Resolves Cloud Anchor items are by far the largest latency bottleneck in the system. These processes are the 
 points where a user has made a request to create an anchor that may be used for user alignment and when peer users try to resolve that alignment 
-respectively.
-% We observe that the cloud server host and resolve time is the largest latency bottleneck in the system. \QH{this is still not clear. what's not clear is that you assume people know `the cloud server host and resolve time' is the same as `user alignment' time.}
-Given this massive disparity between user alignment latency and other functions, we believe the greatest benefits to user-perceived
+respectively. Given this massive disparity between user alignment latency and other functions, we believe the greatest benefits to user-perceived
 system latency is to reduce the latency of the cloud-based alignment system.
 
 Figure \ref{fig:parallelProcessBenchmark} shows a more 
@@ -341,7 +335,7 @@ detailed view of the hosting and resolving process between the cloud server and 
 \begin{figure}[!htb]
     \centering
     \includegraphics[width=0.5\textwidth]{figure/benchmarkParallel.pdf}
-    \caption{Benchmark AR system with users requesting Cloud Anchor hosting from Google servers (cloud).}
+    \caption{Anchor hosting and resolving in Google's cloud-based Cloud Anchor alignment system}
     \label{fig:parallelProcessBenchmark}
     \end{figure}
 
@@ -367,51 +361,17 @@ detailed view of the hosting and resolving process between the cloud server and 
 
 
 
-% \section{Bibliography Instructions}
 
-% \begin{itemize}
-% \item Sort all bibliographic entries alphabetically but the last name of the first author. This \LaTeX/bib\TeX\ template takes care of this sorting automatically.
-% \item Merge multiple references into one; e.\,g., use \cite{Kitware:2003,Max:1995:OMF} (not \cite{Kitware:2003}\cite{Max:1995:OMF}). Within each set of multiple references, the references should be sorted in ascending order. This \LaTeX/bib\TeX\ template takes care of both the merging and the sorting automatically.
-% \item Verify all data obtained from digital libraries, even ACM's DL and IEEE Xplore  etc.\ are sometimes wrong or incomplete.
-% \item Do not trust bibliographic data from other services such as Mendeley.com, Google Scholar, or similar; these are even more likely to be incorrect or incomplete.
-% \item Articles in journal---items to include:
-%   \begin{itemize}
-%   \item author names
-% 	\item title
-% 	\item journal name
-% 	\item year
-% 	\item volume
-% 	\item number
-% 	\item month of publication as variable name (i.\,e., \{jan\} for January, etc.; month ranges using \{jan \#\{/\}\# feb\} or \{jan \#\{-{}-\}\# feb\})
-%   \end{itemize}
-% \item use journal names in proper style: correct: ``IEEE Transactions on Visualization and Computer Graphics'', incorrect: ``Visualization and Computer Graphics, IEEE Transactions on''
-% \item Papers in proceedings---items to include:
-%   \begin{itemize}
-%   \item author names
-% 	\item title
-% 	\item abbreviated proceedings name: e.\,g., ``Proc.\textbackslash{} CONF\_ACRONYNM'' without the year; example: ``Proc.\textbackslash{} CHI'', ``Proc.\textbackslash{} 3DUI'', ``Proc.\textbackslash{} Eurographics'', ``Proc.\textbackslash{} EuroVis''
-% 	\item year
-% 	\item publisher
-% 	\item town with country of publisher (the town can be abbreviated for well-known towns such as New York or Berlin)
-%   \end{itemize}
-% \item article/paper title convention: refrain from using curly brackets, except for acronyms/proper names/words following dashes/question marks etc.; example:
-% \begin{itemize}
-% 	\item paper ``Marching Cubes: A High Resolution 3D Surface Construction Algorithm''
-% 	\item should be entered as ``\{M\}arching \{C\}ubes: A High Resolution \{3D\} Surface Construction Algorithm'' or  ``\{M\}arching \{C\}ubes: A high resolution \{3D\} surface construction algorithm''
-% 	\item will be typeset as ``Marching Cubes: A high resolution 3D surface construction algorithm''
-% \end{itemize}
-% \item for all entries
-% \begin{itemize}
-% 	\item DOI can be entered in the DOI field as plain DOI number or as DOI url; alternative: a url in the URL field
-% 	\item provide full page ranges AA-{}-BB
-% \end{itemize}
-% \item when citing references, do not use the reference as a sentence object; e.\,g., wrong: ``In \cite{Lorensen:1987:MCA} the authors describe \dots'', correct: ``Lorensen and Cline \cite{Lorensen:1987:MCA} describe \dots''
-% \end{itemize}
+\section{Our Approaches}
+To achieve a system that provides users with real-time alignment, we propose two distinct approaches. The first is a hybrid architecture that uses peer-to-peer results to supply an almost instant user alignment which is then replaced by a higher latency, but
+more accurate cloud-based alignment. The second is a gravity constrained  point cloud alignment algorithm that runs extremely fast on resource-constrained user devices.
+The hybrid architecture allows for the cloud-based alignment to be computed in parallel to the peer-to-peer
+user alignment system. While the host is awaiting an alignment ID from the cloud server, it begins streaming the associated point cloud of 
+the cloud anchor location as well as its gravity vector to resolver user devices. The streamed point cloud is sparse, 50-200 points 
+local to the selected location, so that the network and computationally latency may be minimized. Resolvers then take the gravity vector of both devices 
+into account to run a user alignment algorithm at periodic intervals to generate new peer-to-peer alignment estimates. 
 
-\section{Our Approach}
-To achieve a system that provides users with real-time alignment, we propose a hybrid architecture that 
-uses peer-to-peer results to supply an almost instant user alignment. The real-time user alignment is then replaced by a higher latency, but
-more accurate cloud-based alignment. With this augmentation the overall system adds no new devices, but now the host and resolver devices have 
+With this augmentation the overall system adds no new devices, but now the host and resolver devices have 
 additional functionality. The host device, upon initiation of a request to the cloud server, now begins streaming its point cloud view to 
 resolver devices. Resolver devices receive point clouds from the host to execute a local alignment algorithm until a cloud anchor ID is 
 received from the host that the resolver may use to query the cloud server.
@@ -424,20 +384,13 @@ received from the host that the resolver may use to query the cloud server.
 % devices receive point clouds from the host to execute a local alignment algorithm until a cloud anchor ID is received from the host 
 % that the resolver may use to query the cloud server. 
 
-The two distinct approaches that allow this system to perform so much faster are its hybrid architecture and its gravity constrained 
-point cloud alignment algorithm that runs extremely fast on resource-constrained user devices.
 
-The hybrid architecture allows for the cloud-based alignment to be computed in parallel to the peer-to-peer
-user alignment system. While the host is awaiting an alignment ID from the cloud server, it begins streaming the associated point cloud of 
-the cloud anchor location as well as its gravity vector to resolver user devices. The streamed point cloud is sparse, 50-200 points 
-local to the selected location, so that the network and computationally latency may be minimized. Resolvers then take the gravity vector of both devices 
-into account to run a user alignment algorithm at periodic intervals to generate new peer-to-peer alignment estimates. By running this algorithm in parallel, 
-the same system used for exploratory studies may now facilitate user interaction within approximately 100ms. 
+%By running this algorithm in parallel, the same system used for exploratory studies may now facilitate user interaction within approximately 100ms. 
 % Eventually, the host gets a return UUID from the cloud server that is sent to the resolver peers. The peer devices then 
 % send the UUID along with their own video frames to the cloud to achieve a more precise alignment. Upon completing cloud
 % alignment, resolvers message the host to be removed from the streaming list.
 
-\section{Hybrid Architecture}
+\subsection{Hybrid Architecture}
 
 
 The hybrid architecture may be viewed as a system that is accomplished by splitting up the user alignment into two steps. Once an alignment request 
@@ -464,7 +417,7 @@ This process is detailed in Figure \ref{fig:parallelProcess} below.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.5\textwidth]{figure/parallelProcess.pdf}
-    \caption{Hybrid system. The sequence of peer-to-peer streamed point cloud messages are shown in red. The cloud-based alignment is shown in blue.}
+    \caption{Our hybrid architecture. The sequence of peer-to-peer streamed point cloud messages are shown in red, and he cloud-based alignment is shown in blue.}
     \label{fig:parallelProcess}
 \end{figure}
 
@@ -495,14 +448,13 @@ pre-processing, finding an initial homogenous transformation guess, and finally 
 solver. Although all three phases are critical to finding an alignment between users, the use of a gravity vector is particularly unique 
 to the system hardware and use case. 
 
-% \QH{this first sentence reads odd. The flow from the previous paragraph is not good because you started with `... then filters', what about first? } \MD{I beleive this was an artifact from a copy paste.}
 In summary, each peer filters their own point clouds and uses a gravity-based user alignment algorithm to select an initial 
 estimate for an iterative closest point (ICP) algorithm. After a transform between point clouds is acquired, the 
 views are aligned between host and resolver. This peer-to-peer process is periodically repeated. There is a balance 
 to be found in designing this system between accuracy of resolve and $t_{alignment}$. $t_{alignment}$ cannot be so 
 short that accuracy is unusable, yet also cannot be so long that it does not significantly improve the user perceived 
 latency of the system. This balance must be met by satisfying the requirements demanded by our use case. This system must be able to provide 
-input for humans and so should be responsive within approximately human reaction time, which is approximately 100ms \cite{MARVEL}
+input for humans and so should be responsive within approximately human reaction time, which is approximately 100ms \cite{MARVEL}.
 
 
 {\bf Phase 1. Pre-processing: }
@@ -603,9 +555,12 @@ preprocessing and initial guess steps completed, we expect that the ICP algorith
 centers of mass that only need to be translated and rotated about the y axis. This will allow the algorithm solution to iteratively find the local minima near the 
 initial guess. %Running ICP has a complexity of $O(n^2)$ due to the reliance on checking each point to every other point for nearest neighbors. % Don't forget to comment on the kd-tree fix later.
 
-\section{Experimental Results}\label{ExperimentalResults}
+\section{Performance Evaluation}\label{ExperimentalResults}
 
-Experiments were conducted in a variety of well-lit indoor environments. The system begins streaming 
+Experiments were conducted in a variety of well-lit indoor environments. We used the same devices and experimental setup as in our exploratory studies.  To compare the performance between our proposed system and the benchmark system, we consider two metrics. In addition to latency of alignment, we also compare the spatial accuracy of alignment. In this study, we use the accuracy provided by the cloud-based system as the ground truth and measure the error of our system from that. 
+
+\paragraph{\bf Alignment Latency.}
+The system begins streaming 
 once the host device makes a request query to the cloud server and is awaiting a response. We 
 find that the average latency is 119.69ms for each peer-to-peer user alignment. This effectively 
 reduces the user perceived latency of the multi-user system from 3.725 seconds to 119.69ms or an approximate 97\% reduction in latency. Table 
@@ -670,25 +625,26 @@ number of alignments per host event is 11.5. %I would like to make a graph for t
     \label{tab:parallel_latency}
 \end{table}
 
-This reduction in latency comes with a less spatially accurate alignment between users. Figure \ref{fig:accuracy_histogram} below shows the
+\paragraph{\bf Alignment Error}
+The reduction in latency comes with a less spatially accurate alignment between users. Figure \ref{fig:accuracy_histogram} shows the
 error distribution in x, y, and z directions respectively. Error is measured with respect to the cloud served alignment solution.
 
-\begin{figure}[htb]
+\begin{figure}[!htb]
     \centering
     \includegraphics[width=0.4\textwidth]{figure/linear_error_hist.pdf}
     \caption{Distribution of linear error with respect to cloud solution. (Top) x error in cm. (Middle) y error in cm. (Bottom) z error in cm.}
     \label{fig:accuracy_histogram}
 \end{figure}
 
-The average error, seen in Figure \ref{fig:distance_barchart}, in the x, y, and z directions is -0.2133cm, 0.5718cm, and 
--1.0175cm respectively. %\QH{convert these numbers to cm unit} 
+The average error, seen in Figure \ref{fig:distance_barchart}, in the x, y, and z directions is -0.2133 cm, 0.5718 cm, and 
+-1.0175 cm respectively. 
 Although this shows that the algorithm is on average accurate within a cm, it is clear that there 
 is a notable variance about the average for every direction. One feature of note is the lower variance in the y direction. Unity 
 uses the left hand coordinate convention with the y axis facing up, so this corresponds the the axis about which the yaw values 
 are being solved. It follows that this is the axis with the tightest spread in variance as it represents the roll and pitch 
 locked plane ``lifting" away from corresponding point cloud plane and quickly grows in error as a solution candidate.
 
-\begin{figure}[htb]
+\begin{figure}[!htb]
     \centering
     \includegraphics[width=0.4\textwidth]{figure/linear_error.pdf}
     \caption{Average linear error in each linear direction with respect to the cloud server solution.}
@@ -699,7 +655,7 @@ Figure \ref{fig:angle_histogram} illustrates the variation of angular accuracy r
 x axis scale as the yaw data. This shows an extremely tight grouping when compared to yaw values due to the use of IMU gravity alignment to solve for 
 roll and pitch values directly. 
 
-\begin{figure}[htb]
+\begin{figure}[!htb]
     \centering
     \includegraphics[width=0.4\textwidth]{figure/euler_error_hist.pdf}
     \caption{Distribution of angular error about each linear axis. (Top) Roll error in degrees. (Middle) Yaw error in degrees. (Bottom) Pitch error in degrees.}
@@ -752,7 +708,6 @@ may lead to better results than cloud solutions. The second extension would be t
 user camera frame to transform points before conducting data analysis. The mean error in Section \ref{ExperimentalResults} may be correlated 
 with the direction of the vector orthogonal to the camera plane, as cameras have less accurate tracking depth. If these were quantified in our 
 system, it could be used to create a more accurate algorithm that compensates for this effect.
-% Some of this may get implemented by the deadline, but may also not be necessary.
 
 Future work includes further connecting the greater system design in ways that make it more 
 robust to network reliability. A new user may enter the interaction that was not within the network
@@ -783,6 +738,9 @@ by system architecture.
 % \acknowledgments{
 % The authors wish to thank A, B, and C. This work was supported in part by
 % a grant from XYZ.}
+
+\clearpage
+
 
 %\bibliographystyle{abbrv}
 \bibliographystyle{abbrv-doi}
