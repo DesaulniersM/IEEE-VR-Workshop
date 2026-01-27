@@ -100,6 +100,51 @@ Colorado School of Mines, Golden, CO, USA \\
 %   \label{fig:teaser}
 % }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%% Reviewer Notes %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%% Reviewer 1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% 1. ✅Index terms should be in alphabetical order
+% 2. ✅Some missing descriptions towards the end of Figure 2 need to 
+    % be clarified (more specifically, what happens towards the end 
+    % of the flow of the proposed framework).
+% 3. ✅Add missing citations for claims referring to the existing 
+    % body of knowledge and term definitions.
+
+%%%%%%%%%%%%%%%%%%%%%%%% Reviewer 2 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% 1. Future work should focus on two areas: the scalability of the 
+    % concept (as already mentioned by the authors), and the 
+    % investigation of different and asymmetric network performance 
+    % categories for the second step. For example, what happens if 
+    % some users are on the same local network (with short delays) 
+    % while others experience long delays, inevitable due to 
+    % wide-area network transport?
+
+%%%%%%%%%%%%%%%%%%%%%%%% Reviewer 3 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% 1. ✅As the experiment conducted was limited to three devices only, 
+    % the benefits/impacts of peer-to-peer information exchange may 
+    % be different for scenarios with more devices (causing higher 
+    % local latency on the network and more computational efforts 
+    % to align the n different point clouds). This might, at some 
+    % point, be overcome by means of utilizing multicast or 
+    % broadcast network technologies rather than collisin-prone 
+    % point-to-point communication, which would have been great to 
+    % see addressed or at least discussed in this work as well.
+
+% 2. Also, I wonder on the robustness of the approach towards rapid 
+    % motion of objects. The example scenario discussed does not only 
+    % require low latency, but also has high dynamics in the AR object 
+    % position and relocation aspects (as in: high speed of objects), 
+    % potentially negatively impacting on the validity, quality, or 
+    % computational complexity of the described approach. This could 
+    % have been addressed more precisely in the paper.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %% Abstract section.
 \abstract{
   Multi-user Augmented Reality (AR) systems are critical for the enhancement of existing and future collaborative 
@@ -119,7 +164,7 @@ Colorado School of Mines, Golden, CO, USA \\
 
 %% Keywords that describe your work. Will show as 'Index Terms' in journal
 %% please capitalize first letter and insert punctuation after last keyword.
-\keywords{Augmented Reality, Point Registration, Alignment.}
+\keywords{Alignment, Augmented Reality, Point Registration.}
 
 %% Copyright space is enabled by default as required by guidelines.
 %% It is disabled by the 'review' option or via the following command:
@@ -186,7 +231,7 @@ aims to decrease end-to-end system latency without significantly sacrificing obj
 % user design fundamentals. 
 
 %  What has been done so far
-There are multiple perspectives in which this problem has been approached by the multi-user AR research community.
+There are multiple perspectives in which this problem has been approached by the multi-user AR research community \cite{BreakingEdgeShackles,hambazi,AdaptSLAM,SEESys}.
 Many works solve this trade-off between system cost and computational ability by offloading compute to edge or 
 cloud servers. This decreases the local  costs of computation on a user device, but increases 
 total system complexity by introducing a network component and latency associated with network routing and 
@@ -236,7 +281,7 @@ in the form of time taken to synchronize maps, the alignment is still only as ac
 
 The second method is through direct user to user alignment. This has been achieved a number of ways. 
 The concept of sending keyframes is a recurring theme in these works. A keyframe may be defined as a frame within a 
-sequence of spatial data (this may be video or point clouds) that is chosen as a particularly useful frame. Usefulness may 
+sequence of spatial data (this may be video or point clouds) that is chosen as a particularly useful frame \cite{BreakingEdgeShackles}. Usefulness may 
 be due to a particularly rich feature set or the timing of the frame itself with respect to the system processes. In some cases,
 the keyframe is 3D data that is compressed back into a 2D data structure, like an image, and sent as if it were a feature-rich 
 image frame\cite{ARLight}. Alternatively, some have used the keyframes generated from SLAM to begin a separate alignment process \cite{communication-efficient-spatially-consistent}.
@@ -417,7 +462,8 @@ This process is detailed in Figure \ref{fig:parallelProcess} below.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.5\textwidth]{figure/parallelProcess.pdf}
-    \caption{Our hybrid architecture. The sequence of peer-to-peer streamed point cloud messages are shown in red, and he cloud-based alignment is shown in blue.}
+    \caption{Our hybrid architecture. The sequence of peer-to-peer streamed point cloud messages are shown in red, and the cloud-based alignment is shown in blue. the 
+    peer-to-peer streamed messaged are sent periodically by the Host device until the Resolver receives Cloud solution and sends confirmation to the Host.}
     \label{fig:parallelProcess}
 \end{figure}
 
@@ -718,7 +764,8 @@ alignments. While this would take longer, it would serve as a better permanent a
 available, but no cloud server. From a single user's perspective, this algorithm could be improved by 
 the addition of some kind of tracked state. Once an alignment is solved for, this could be used as the beginning 
 of an estimation algorithm that updates the state of the alignment rather than simply replacing it as 
-the system currently does. This idea was attempted, but with no promising results in the time available.
+the system currently does. This idea was attempted, but with no promising results in the time available. As a distributed system it would likely 
+benefit the group of peers to implement this feature using multicasting for more efficient message passing between peers.
 
 Scaling in this system is linear in most functions. AR object placement is conducted in a complete network and so a placement 
 from one user to $n$ users only takes $n$ messages at most. Alignment for both peer-to-peer and cloud algorithms work the same way.
